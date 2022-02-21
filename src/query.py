@@ -5,7 +5,7 @@ import re
 
 class es_helper:
     def __init__(self):
-        self.es = Elasticsearch([{'host': "0.0.0.0", 'port': 9200}])
+        self.es = Elasticsearch([{'host': "128.174.136.27", 'port': 9500}], http_auth = ('elastic', 'forwarddatalab'))
 
     """
     results: result body from search
@@ -185,6 +185,52 @@ class es_helper:
 
         return sorted(hits, key = lambda i: i['Year'], reverse = True)
 
+    """
+    paper_id : the id of the paper to be searched for
+    cited : default to Faulse meaning the paper referenced by the given paper are fetched, 
+                else the papers referencing the given paper are fetched
+    size : default to 10, max size of data returned
+
+    return: Id of the papers that are referenced by the provided paper
+    """
+    def search_reference_paper_id(self, paper_id : str, cited = False, size = 10):
+        print("searching for papers referenced by paper {}".format(paper_id))
+        
+        body = {
+            "match" : {
+                "{}.keyword".format("PaperReferenceId" if cited else "PaperId") : paper_id
+            }
+        }
+
+        results = self.es.search(query = body, index = "paper_references", size = size)
+
+        return self.hits_processor(results)
+
+    """
+    name : name of the intended author
+    affil : affiliation of the intended author
+
+    return: all papers of the author added with a PaperReference key matching to papers referenced by each paper
+    """
+    def search_author_for_reference_paper_id(self, name : str, affil = ""):
+        author_papers = self.search_author_for_paper(name, affil)
+        author_papers_with_reference = []
+
+        if len(author_papers) == 0:
+            return dict()
+
+        for paper in author_papers:
+            paper_references = self.search_reference_paper_id(paper["PaperId"])
+            reference_list = []
+            for refernece in paper_references:
+                info = self.search_paper(refernece["PaperId"])
+                if len(info) != 0:
+                    reference_list.append(info)
+            paper["PaperReference"] = reference_list
+            author_papers_with_reference.append(paper)
+        
+        return author_papers_with_reference
+
 
 """
 returns: list of [index, affiliation, name] lists of the CS faculty dataset
@@ -246,8 +292,10 @@ if __name__ == "__main__":
     es = es_helper()
     
     # Modify this line for testing purposes
-    print(len(es.search_author_for_paper(name = "abdussalam alawini", affil = "university of illinois at urbana champaign")))
-    #print(es.search_author_for_paper(name = "Marty Banks", affil = "University of california Berkeley"))
+    # print(es.search_reference_paper_id("1977714272", size = 20))
+    #print(es.search_author_for_reference_paper_id(name = "abdussalam alawini", affil = "university of illinois at urbana champaign"))
+    print(es.search_author_for_reference_paper_id(name = "Marty Banks", affil = "University of california Berkeley"))
+    #print(es.search_reference_paper_id("2799392932"))
 
     # Get result from searching CS faculties
     # print(get_hit_list_faculty())

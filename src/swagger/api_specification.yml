@@ -1,0 +1,41 @@
+swagger: "2.0"
+
+info:
+  title: "Demo"
+  version: "1.0"
+
+schemes:
+ - http
+ 
+paths:
+  /search_author_name/{author_name}:
+      get:
+        tags:
+        - public
+        operationId: resolve.search_author_name
+        parameters:
+          - in: path
+            name: author_name
+            type: string
+            required: true 
+            description: Name of the author
+        responses:
+          '200':
+            description: OK
+            schema:
+              type: file
+
+# tags are used for organizing operations
+tags:
+- name: public
+  description: Operations available to regular developers
+- name: admins
+  description: Secured Admin-only calls
+
+definitions:
+  DataObject:
+    type: object
+    properties:
+      _id:  { type: integer, format: int64 }
+      dataname: { type: string }
+      fields: { type: string }
