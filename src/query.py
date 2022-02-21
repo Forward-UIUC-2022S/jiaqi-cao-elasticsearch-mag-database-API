@@ -294,7 +294,8 @@ if __name__ == "__main__":
     # Modify this line for testing purposes
     # print(es.search_reference_paper_id("1977714272", size = 20))
     #print(es.search_author_for_reference_paper_id(name = "abdussalam alawini", affil = "university of illinois at urbana champaign"))
-    print(es.search_author_for_reference_paper_id(name = "Marty Banks", affil = "University of california Berkeley"))
+    #print(es.search_author_for_reference_paper_id(name = "Marty Banks", affil = "University of california Berkeley"))
+    print(es.search_author_affiliation("abdussalam alawini", "university of illinois urbana champaigb"))
     #print(es.search_reference_paper_id("2799392932"))
 
     # Get result from searching CS faculties
