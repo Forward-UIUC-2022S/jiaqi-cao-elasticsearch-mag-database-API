@@ -4,12 +4,21 @@ import json
 
 es = es_helper()
 
-def search_author_name(author_name):
-    print("Searching for author {} in path {}".format(author_name, request.path))
-    result = es.search_author(name = author_name)
+def search_author_name_affiliation():
+    author_name = request.args.get("author_name")
+    author_affiliation = request.args.get("author_affiliation")
+    if author_affiliation == None:
+        result = es.search_author(author_name, size = 10)
+    else:
+        result = es.search_author_affiliation(author_name, author_affiliation)
+
     return json.dumps(result)
 
-def search_author_name_affiliation(author_name, author_affiliation):
-    print("Searching for author {} from {} in path {}".format(author_name, author_affiliation, request.path))
-    result = es.search_author_affiliation(author_name, author_affiliation)
+def search_author_for_paper():
+    author_name = request.args.get("author_name")
+    author_affiliation = request.args.get("author_affiliation")
+    if author_affiliation == None:
+        author_affiliation = ""
+    
+    result = es.search_author_for_paper(author_name, author_affiliation)
     return json.dumps(result)

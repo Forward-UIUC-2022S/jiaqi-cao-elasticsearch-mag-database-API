@@ -8,29 +8,7 @@ servers:
   - url: http://128.174.136.27:8080/v1
  
 paths:
-  /search_author_name:
-      get:
-        tags:
-        - public
-        operationId: resolve.search_author_name
-        parameters:
-          - in: query
-            name: author_name
-            schema:
-              type: string
-            required: true 
-            description: Name of the author
-        responses:
-          '200':
-            description: OK
-            content:
-              applicatoin/json:
-                schema:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/Author'
-  
-  /search_author_name_affiliation:
+  /search_author:
       get:
         tags:
         - public
@@ -46,7 +24,6 @@ paths:
             name: author_affiliation
             schema:
               type: string
-            required: true
             description: Affiliation of the author
         responses:
           '200':
@@ -57,6 +34,33 @@ paths:
                   type: array
                   items:
                     $ref: '#/components/schemas/Author'
+
+  /search_author_for_paper:
+      get:
+        tags:
+        - public
+        operationId: resolve.search_author_for_paper
+        parameters:
+          - in: query
+            name: author_name
+            schema:
+              type: string
+            required: true 
+            description: Name of the author
+          - in: query
+            name: author_affiliation
+            schema:
+              type: string
+            description: Affiliation of the author
+        responses:
+          '200':
+            description: OK
+            content:
+              applicatoin/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Paper'
 
 
 components:
@@ -113,6 +117,62 @@ components:
           type: string
         CreatedDate:
           type: string
+    Paper:
+      type: object
+      properties:
+        PaperId:
+          type: string
+        Rank:
+          type: string
+        Doi:
+          type: string
+        DocType:
+          type: string
+        PaperTitle:
+          type: string
+        OriginalTitle:
+          type: string
+        BookTitle:
+          type: string
+        Year:
+          type: string
+        Date:
+          type: string
+        OnlineDate:
+          type: string
+        Publisher:
+          type: string
+        JournalId:
+          type: string
+        ConferenceSeriesId:
+          type: string
+        ConferenceInstanceId:
+          type: string
+        Volume:
+          type: string
+        Issue:
+          type: string
+        FirstPage:
+          type: string
+        LastPage:
+          type: string
+        ReferenceCount:
+          type: string
+        CitationCount:
+          type: string
+        EstimatedCitation:
+          type: string
+        OriginalVenue:
+          type: string
+        FamilyId:
+          type: string
+        FamilyRank:
+          type: string
+        DocSubTypes:
+          type: string
+        CreatedDate:
+          type: string
+
 
    
       

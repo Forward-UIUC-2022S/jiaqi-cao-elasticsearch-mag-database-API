@@ -141,7 +141,7 @@ class es_helper:
 
     returns: the id of papers published by the author (from the papers_authors_affiliations index), else empty dict
     """
-    def search_author_for_paperid(self, name : str, affil = "") -> list:
+    def search_author_for_paperid(self, name : str, affil = "", size = 10) -> list:
         print("searching for id of papers of author : {} from {}".format(name, affil))
 
         author_hits = self.search_author_affiliation(name, affil) if affil != "" else self.search_author(name)
@@ -172,10 +172,10 @@ class es_helper:
     returns: the paper objects published by the queried author sorted
     """
 
-    def search_author_for_paper(self, name : str, affil = "", sort_by = "Year") -> dict:
+    def search_author_for_paper(self, name : str, affil = "", sort_by = "Year", size = 10) -> dict:
         print("searching for papers of author : {} from {}".format(name, affil))
         
-        paperid_result = self.search_author_for_paperid(name, affil)
+        paperid_result = self.search_author_for_paperid(name, affil, size = size)
         hits = []
         if len(paperid_result):
             for row in paperid_result:
@@ -295,7 +295,7 @@ if __name__ == "__main__":
     # print(es.search_reference_paper_id("1977714272", size = 20))
     #print(es.search_author_for_reference_paper_id(name = "abdussalam alawini", affil = "university of illinois at urbana champaign"))
     #print(es.search_author_for_reference_paper_id(name = "Marty Banks", affil = "University of california Berkeley"))
-    print(es.search_author_affiliation("abdussalam alawini", "university of illinois urbana champaigb"))
+    print(es.search_author_for_paper("abdussalam alawini", "university of illinois urbana champaigb"))
     #print(es.search_reference_paper_id("2799392932"))
 
     # Get result from searching CS faculties
