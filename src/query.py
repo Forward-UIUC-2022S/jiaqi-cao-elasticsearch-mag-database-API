@@ -37,8 +37,6 @@ class es_helper:
     """
 
     def search_affiliation(self, affil : str, size = 1) -> list:
-        print("searching for affiliation :", affil)
-
         body = {
                 "bool": {
                     "must": [
@@ -61,8 +59,6 @@ class es_helper:
             that's parsed by hits_processor
     """
     def search_author(self, name : str, size = 1) -> list:
-        print("searching for affiliation :", name)
-
         body = {
                 "bool": {
                     "must": [
@@ -82,10 +78,8 @@ class es_helper:
 
     returns: result body from elasticsearch whose paper's id matches paper_id
     """
-
     def search_paper(self, paper_id: str, size =1) -> list():
-        print("searching for paper id :", paper_id)
-
+   
         body = {
                 "bool": {
                     "must": [
@@ -104,8 +98,6 @@ class es_helper:
     returns: the first hit body as a dict in the result body from elasticsearch, else empty dict
     """
     def search_author_affiliation(self, name : str, affil : str, size = 1) -> list:
-        print("searching for author : {} from {}".format(name, affil))
-
         affil_hits = self.search_affiliation(affil)
 
         if len(affil_hits):
@@ -142,8 +134,6 @@ class es_helper:
     returns: the id of papers published by the author (from the papers_authors_affiliations index), else empty dict
     """
     def search_author_for_paperid(self, name : str, affil = "", size = 10) -> list:
-        print("searching for id of papers of author : {} from {}".format(name, affil))
-
         author_hits = self.search_author_affiliation(name, affil) if affil != "" else self.search_author(name)
 
         if len(author_hits):
@@ -172,9 +162,7 @@ class es_helper:
     returns: the paper objects published by the queried author sorted
     """
 
-    def search_author_for_paper(self, name : str, affil = "", sort_by = "Year", size = 10) -> dict:
-        print("searching for papers of author : {} from {}".format(name, affil))
-        
+    def search_author_for_paper(self, name : str, affil = "", sort_by = "Year", size = 10) -> dict:  
         paperid_result = self.search_author_for_paperid(name, affil, size = size)
         hits = []
         if len(paperid_result):
@@ -194,17 +182,36 @@ class es_helper:
     return: Id of the papers that are referenced by the provided paper
     """
     def search_reference_paper_id(self, paper_id : str, cited = False, size = 10):
-        print("searching for papers referenced by paper {}".format(paper_id))
-        
         body = {
             "match" : {
                 "{}.keyword".format("PaperReferenceId" if cited else "PaperId") : paper_id
             }
         }
+        print(body)
 
         results = self.es.search(query = body, index = "paper_references", size = size)
 
         return self.hits_processor(results)
+    
+    """
+    paper_id : the id of the paper to be searched for
+    cited : default to Faulse meaning the paper referenced by the given paper are fetched, 
+                else the papers referencing the given paper are fetched
+    size : default to 10, max size of data returned
+
+    return: papers that are referenced by the provided paper
+    """
+    def search_reference_paper(self, paper_id : str, cited = False, size = 10) :
+        raw_results = self.search_reference_paper_id(paper_id, cited = cited, size = size)
+        result = []
+
+        for entry in raw_results:
+            paper_id = entry["PaperId"] if cited else entry["PaperReferenceId"]
+            paper = self.search_paper(paper_id)
+            if len(paper) == 1:
+                result.append(paper[0])
+        
+        return result
 
     """
     name : name of the intended author
@@ -212,7 +219,7 @@ class es_helper:
 
     return: all papers of the author added with a PaperReference key matching to papers referenced by each paper
     """
-    def search_author_for_reference_paper_id(self, name : str, affil = ""):
+    def search_author_for_reference_paper(self, name : str, affil = ""):
         author_papers = self.search_author_for_paper(name, affil)
         author_papers_with_reference = []
 
@@ -292,10 +299,13 @@ if __name__ == "__main__":
     es = es_helper()
     
     # Modify this line for testing purposes
-    # print(es.search_reference_paper_id("1977714272", size = 20))
-    #print(es.search_author_for_reference_paper_id(name = "abdussalam alawini", affil = "university of illinois at urbana champaign"))
-    #print(es.search_author_for_reference_paper_id(name = "Marty Banks", affil = "University of california Berkeley"))
-    print(es.search_author_for_paper("abdussalam alawini", "university of illinois urbana champaigb"))
+    print(es.search_reference_paper("1977714272", cited = True, size = 20))
+    # result = es.search_author_for_reference_paper(name = "abdussalam alawini", affil = "university of illinois at urbana champaign")
+    # result = es.search_author_for_reference_paper(name = "Marty Banks", affil = "University of california Berkeley")
+    # print("**" *20)
+    # for i in result:
+    #     print(i["PaperReference"])
+    #print(es.search_author_for_paper("abdussalam alawini", "university of illinois urbana champaigb"))
     #print(es.search_reference_paper_id("2799392932"))
 
     # Get result from searching CS faculties

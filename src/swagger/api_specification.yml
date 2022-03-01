@@ -35,7 +35,7 @@ paths:
                   items:
                     $ref: '#/components/schemas/Author'
 
-  /search_author_for_paper:
+  /search_paper:
       get:
         tags:
         - public
@@ -45,13 +45,17 @@ paths:
             name: author_name
             schema:
               type: string
-            required: true 
             description: Name of the author
           - in: query
             name: author_affiliation
             schema:
               type: string
             description: Affiliation of the author
+          - in: query
+            name: paperID
+            schema:
+              type: string
+            description: ID of the paper
         responses:
           '200':
             description: OK
@@ -61,6 +65,41 @@ paths:
                   type: array
                   items:
                     $ref: '#/components/schemas/Paper'
+          '400':
+            description: Bad request. You must provide an author name if paper ID is not provided                
+  
+  /search_reference_paper:
+      get:
+        tags:
+          - public
+        operationId: resolve.search_reference_paper
+        description: Searches for the papers referenced by/referencing the given paper
+        parameters:
+          - in: query
+            name: paperID
+            schema:
+              type: string
+            required: true 
+            description: ID of the paper
+          - in: query
+            name: num_paper
+            schema:
+              type: integer 
+            description: Number of reference paper to be searched
+          - in: query
+            name: referencing
+            schema:
+              type: boolean 
+            description: Indicator of whether papers referencing the given paper is wanted, default to False meaning paper referenced by the given paper are returned  
+        responses:
+          '200':
+            description: OK
+            content:
+              applicatoin/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Paper'                                                                                                                                                                 
 
 
 components:
@@ -172,6 +211,7 @@ components:
           type: string
         CreatedDate:
           type: string
+  
 
 
    
