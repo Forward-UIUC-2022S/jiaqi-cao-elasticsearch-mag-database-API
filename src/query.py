@@ -182,9 +182,14 @@ class es_helper:
     return: Id of the papers that are referenced by the provided paper
     """
     def search_reference_paper_id(self, paper_id : str, cited = False, size = 10):
+        key = ""
+        if cited == True:
+            key = "PaperReferenceId" 
+        else:
+            key = "PaperId"
         body = {
             "match" : {
-                "{}.keyword".format("PaperReferenceId" if cited else "PaperId") : paper_id
+                "{}.keyword".format(key) : paper_id
             }
         }
         print(body)
@@ -204,9 +209,14 @@ class es_helper:
     def search_reference_paper(self, paper_id : str, cited = False, size = 10) :
         raw_results = self.search_reference_paper_id(paper_id, cited = cited, size = size)
         result = []
+        key = ""
+        if cited == True:
+            key = "PaperId" 
+        else:
+            key = "PaperReferenceId"
 
         for entry in raw_results:
-            paper_id = entry["PaperId"] if cited else entry["PaperReferenceId"]
+            paper_id = entry[key]
             paper = self.search_paper(paper_id)
             if len(paper) == 1:
                 result.append(paper[0])
@@ -299,7 +309,7 @@ if __name__ == "__main__":
     es = es_helper()
     
     # Modify this line for testing purposes
-    print(es.search_reference_paper("1977714272", cited = True, size = 20))
+    print(es.search_reference_paper_id("1977714272", cited = False, size = 20))
     # result = es.search_author_for_reference_paper(name = "abdussalam alawini", affil = "university of illinois at urbana champaign")
     # result = es.search_author_for_reference_paper(name = "Marty Banks", affil = "University of california Berkeley")
     # print("**" *20)

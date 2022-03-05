@@ -66,7 +66,7 @@ paths:
                   items:
                     $ref: '#/components/schemas/Paper'
           '400':
-            description: Bad request. You must provide an author name if paper ID is not provided                
+            description: Bad request.         
   
   /search_reference_paper:
       get:

@@ -25,7 +25,7 @@ def search_author_for_paper():
     if author_affiliation == None:
         author_affiliation = ""    
     if author_name == None:
-        return 400
+        return "Bad request. You must provide an author name if paper ID is not provided.", 400
 
     result = es.search_author_for_paper(author_name, author_affiliation)
     return json.dumps(result)
@@ -33,7 +33,7 @@ def search_author_for_paper():
 def search_reference_paper():
     paper_id = request.args.get("paperID")
     size = request.args.get("num_paper")
-    cited = request.args.get("referencing")
+    cited = request.args.get("referencing", default=False, type=lambda v: v.lower() == 'true')
     size = 10 if size == None else size
 
     if cited != None:
