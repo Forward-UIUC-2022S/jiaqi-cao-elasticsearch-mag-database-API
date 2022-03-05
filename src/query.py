@@ -247,6 +247,24 @@ class es_helper:
             author_papers_with_reference.append(paper)
         
         return author_papers_with_reference
+    
+    """
+    paper_title: title of paper to be searched
+
+    return: search resutls of searching given title
+    """
+    def search_paper_title(self, paper_title : str, size = 10):
+
+        body = {
+            "match" : {
+                "OriginalTitle" : paper_title
+            }
+        }
+        print(body)
+
+        results = self.es.search(query = body, index = "papers", size = size)
+
+        return self.hits_processor(results)
 
 
 """

@@ -13,6 +13,7 @@ paths:
         tags:
         - public
         operationId: resolve.search_author_name_affiliation
+        description: Search for authors
         parameters:
           - in: query
             name: author_name
@@ -25,6 +26,11 @@ paths:
             schema:
               type: string
             description: Affiliation of the author
+          - in: query
+            name : size 
+            schema:
+              type: integer
+            description: max number of paper to search for, default to 1 if both name and affiliation are provided, otherwise default to 10
         responses:
           '200':
             description: OK
@@ -39,6 +45,7 @@ paths:
       get:
         tags:
         - public
+        description: Search for papers <br> Provide <br> 1. author name and/or author affiliation to search for papers of the author, or <br> 2. paperID for exact search of paper, or <br> 3. title of paper
         operationId: resolve.search_author_for_paper
         parameters:
           - in: query
@@ -56,6 +63,16 @@ paths:
             schema:
               type: string
             description: ID of the paper
+          - in: query
+            name: paper_title
+            schema:
+              type: string
+            description: title of the paper
+          - in: query
+            name : size 
+            schema:
+              type: integer
+            description: max number of paper to search for, default to 10
         responses:
           '200':
             description: OK
@@ -91,6 +108,11 @@ paths:
             schema:
               type: boolean 
             description: Indicator of whether papers referencing the given paper is wanted, default to False meaning paper referenced by the given paper are returned  
+          - in: query
+            name : size 
+            schema:
+              type: integer
+            description: max number of paper to search for, default to 10
         responses:
           '200':
             description: OK
