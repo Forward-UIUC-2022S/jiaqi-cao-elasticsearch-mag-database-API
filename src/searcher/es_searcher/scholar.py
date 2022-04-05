@@ -1,12 +1,16 @@
 from scholarly import scholarly, ProxyGenerator    
-from query import es_helper 
+from es_searcher import es_searcher 
     
-""" 
-result from Google Scholar, serving as a benchmark system to compare with result returned from Elasticsearch
-
-returns: a generator of publication objects
-"""
 def author_search(author = "", affiliation = "", year = ""):
+    """ 
+    Searches for result from Google Scholar, serving as a benchmark system to compare with result returned from Elasticsearch
+    Args:
+        author (string): name of author
+        affiliation (string): affiliation of author
+        year (string): year of publication
+
+    Returns: a generator of publication objects
+    """
     #pg = ProxyGenerator()
     #success = pg.FreeProxies()
     success = True
@@ -37,7 +41,7 @@ def author_search(author = "", affiliation = "", year = ""):
 def compare_results(author = "", affiliation = "") -> bool:
     print("Comparing result of query: {}, {}".format(author, affiliation))
     
-    es = es_helper()
+    es = es_searcher()
     result_es = es.search_author_for_paper(author, affiliation)
     es_title = []
 

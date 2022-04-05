@@ -104,7 +104,7 @@ paths:
               type: integer 
             description: Number of reference paper to be searched
           - in: query
-            name: referencing
+            name: cited_by
             schema:
               type: boolean 
             description: Indicator of whether papers referencing the given paper is wanted, default to False meaning paper referenced by the given paper are returned  

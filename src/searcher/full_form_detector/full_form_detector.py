@@ -9,13 +9,14 @@ options = Options()
 options.headless = True
 driver = webdriver.Chrome('./chromedriver',options=options)
 
-""" 
-uses webdriver object to execute javascript code and get head of the document 
-url: url of the page
-driver: web driver used
-head: if True then return the head element of the page, else return the body
-"""
 def get_soup(url, driver, head = True):
+    """ 
+    Uses webdriver object to execute javascript code and get head of the document 
+    Args:
+        url: url of the page
+        driver: web driver used
+        head: if True then return the head element of the page, else return the body
+    """
     driver.get(url)
     res_html = driver.execute_script('return document.{}.innerHTML'.format("head" if head else "body"))
 
@@ -23,13 +24,14 @@ def get_soup(url, driver, head = True):
     soup = BeautifulSoup(res_html,'html.parser') 
     return soup
 
-""" 
-query: acronym of institution to be searched
-driver: web driver used
-
-return: a list of institutions that the query might refer to
-"""
 def scrape_institution_page(query, driver):
+    """ 
+    Args:
+        query: acronym of institution to be searched
+        driver: web driver used
+
+    Returns: a list of institutions that the query might refer to
+    """
     # generate the wikipedia page based on query
     link = "https://en.wikipedia.org/wiki/" + re.sub("\s+", r'_', query)
 

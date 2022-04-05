@@ -4,3 +4,4 @@ scholarly==1.4.5
 selenium==4.1.0
 Flask==2.0.3
 swagger_ui_bundle
+mysql-connector-python==8.0.28
