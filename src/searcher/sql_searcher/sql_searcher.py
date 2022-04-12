@@ -2,6 +2,7 @@ import mysql.connector
 import os
 import time
 from tqdm import trange
+import json
 
 class sql_searcher:
     def __init__(self):
@@ -24,13 +25,13 @@ class sql_searcher:
         sql = "SELECT * FROM {};".format(table)
         with self.db.cursor(dictionary=True, buffered = True) as cursor: 
             cursor.execute(sql)
-            rows = cursor.fetchall()
+            rows = cursor.fetchmany(size = 1000)
             with open(path, 'w') as f:
-                # jsonString = json.dumps(rows)
-                # f.write(jsonString)
-                for i in trange(len(rows)):
-                    row = rows[i]
-                    f.write(str(row["PaperId"]) + " " + row["Abstract"] + "\n")
+                while rows is not None:
+                    for row in rows:
+                        json.dump(row, f)
+                        f.write('\n')
+                    rows = cursor.fetchmany(size = 1000)
 
     def search_paper_id(self, paper_id : str) -> list:
         """
@@ -103,8 +104,8 @@ class sql_searcher:
 path = "/srv/local/data/scratch/jiaqic7/paper_abstract.txt"
 table = "paperabstracts"
 searcher = sql_searcher()
-#searcher.write_table_to_csv(table, path)
-print(searcher.search_paper_id("197771427"))
+searcher.write_table_to_csv(table, path)
+# print(searcher.search_paper_id("197771427"))
 #print(searcher.search_author_id_for_papers("69314847"))
 #print(searcher.search_paper_for_references("1977714272", False))
 

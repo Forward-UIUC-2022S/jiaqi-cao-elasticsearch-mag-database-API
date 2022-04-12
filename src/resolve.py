@@ -4,6 +4,18 @@ import json
 
 seacher = searcher()
 
+def search_affiliation():
+    """
+    Resolves the path /search_author
+    
+    Returns:
+        fetched json author object(s)
+    """
+    affiliation_name = request.args.get("affiliation_name")
+    size = request.args.get("size")
+    result = seacher.get_affiliation(affiliation_name, size)
+    return result
+
 def search_author_name_affiliation():
     """
     Resolves the path /search_author
@@ -45,7 +57,7 @@ def search_author_for_paper():
 def search_reference_paper():
     paper_id = request.args.get("paperID")
     size = request.args.get("num_paper")
-    cited = request.args.get("cited_by", default=False, type=lambda v: v.lower() == 'true')
+    cited = request.args.get("cited_by_papers", default=False, type=lambda v: v.lower() == 'true')
 
     result = seacher.get_reference_paper(paper_id, cited, size)
     return result

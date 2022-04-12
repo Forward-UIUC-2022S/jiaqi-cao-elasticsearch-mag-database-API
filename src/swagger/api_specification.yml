@@ -8,6 +8,34 @@ servers:
   - url: http://128.174.136.27:8080/v1
  
 paths:
+  /search_affiation:
+      get:
+        tags:
+        - public
+        operationId: resolve.search_affiliation
+        description: Search for affiliations
+        parameters:
+          - in: query
+            name: affiliation_name
+            schema:
+              type: string
+            required: true 
+            description: Name of the affiliation
+          - in: query
+            name : size 
+            schema:
+              type: integer
+            description: max number of paper to search for, default to 1
+        responses:
+          '200':
+            description: OK
+            content:
+              applicatoin/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Affiliation'
+
   /search_author:
       get:
         tags:
@@ -104,7 +132,7 @@ paths:
               type: integer 
             description: Number of reference paper to be searched
           - in: query
-            name: cited_by
+            name: cited_by_papers
             schema:
               type: boolean 
             description: Indicator of whether papers referencing the given paper is wanted, default to False meaning paper referenced by the given paper are returned  

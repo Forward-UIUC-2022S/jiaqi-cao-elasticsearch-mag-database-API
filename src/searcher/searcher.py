@@ -7,6 +7,19 @@ class searcher:
         self.sql = sql_searcher()
         self.es = es_searcher()
     
+    def get_affiliation(self, affiliation_name, size : str) :
+        """
+        Args:
+            author_name (string): name of author to be searched for 
+            author_affiliation (string): optional affiliation of the author
+            size (string): optional number of objects to return 
+        
+        Returns:
+            Author object(s) matching the name and/or affiliation
+        """
+        result = self.es.search_affiliation(affiliation_name, size = int(size) if size != None else 1)
+        return json.dumps(result)
+
     def get_author(self, author_name, author_affiliation : str, size : str):
         """
         Args:
