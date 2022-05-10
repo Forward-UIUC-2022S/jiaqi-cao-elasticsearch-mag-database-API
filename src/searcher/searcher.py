@@ -53,7 +53,7 @@ class searcher:
         
         return json.dumps(result)
     
-    def get_paper_by_author(self, author_name, author_affiliation : str, size : str):
+    def get_paper_by_author(self, author_name, author_affiliation : str):
         """
         Args:
             author_name (string): name of author to be searched for 
@@ -61,16 +61,16 @@ class searcher:
             size (string): optional number of objects to return 
         
         Returns:
-            Paper object(s) 
+            Paper object(s) in list
         """
         if author_affiliation == None:
-            authors = self.es.search_author(author_name, size = int(size) if size != None else 1)
+            authors = self.es.search_author(author_name, size = 1)
         else:
-            authors = self.es.search_author_affiliation(author_name, author_affiliation,size = int(size) if size != None else 1)
+            authors = self.es.search_author_affiliation(author_name, author_affiliation,size = 1)
         
         if len(authors):
             result = self.sql.search_author_id_for_papers(authors[0]["AuthorId"])
-            return json.dumps(result)
+            return result
         
         return list()
     

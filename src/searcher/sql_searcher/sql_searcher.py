@@ -23,7 +23,7 @@ class sql_searcher:
             path : path the csv goes
         """
         sql = "SELECT * FROM {};".format(table)
-        with self.db.cursor(dictionary=True, buffered = True) as cursor: 
+        with self.db.cursor(dictionary=True) as cursor: 
             cursor.execute(sql)
             rows = cursor.fetchmany(size = 1000)
             with open(path, 'w') as f:
@@ -101,10 +101,11 @@ class sql_searcher:
             cursor.execute(sql)
             return cursor.fetchall()
                            
-path = "/srv/local/data/scratch/jiaqic7/paper_abstract.txt"
-table = "paperabstracts"
-searcher = sql_searcher()
-searcher.write_table_to_csv(table, path)
+# path = "/srv/local/data/scratch/jiaqic7/paper_abstract.txt"
+# table = "paperabstracts"
+# searcher = sql_searcher()
+# searcher.write_table_to_csv(table, path)
+
 # print(searcher.search_paper_id("197771427"))
 #print(searcher.search_author_id_for_papers("69314847"))
 #print(searcher.search_paper_for_references("1977714272", False))
