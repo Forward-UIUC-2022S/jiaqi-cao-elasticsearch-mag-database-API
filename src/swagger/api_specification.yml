@@ -8,15 +8,15 @@ servers:
   - url: http://128.174.136.27:8080/v1
  
 paths:
-  /search_affiation:
+  /affiation:
       get:
         tags:
-        - public
-        operationId: resolve.search_affiliation
-        description: Search for affiliations
+        - affiliations
+        operationId: resolve.get_affiliation
+        description: Search for affiliations by names
         parameters:
           - in: query
-            name: affiliation_name
+            name: affiliation-name
             schema:
               type: string
             required: true 
@@ -36,21 +36,21 @@ paths:
                   items:
                     $ref: '#/components/schemas/Affiliation'
 
-  /search_author:
+  /author:
       get:
         tags:
-        - public
-        operationId: resolve.search_author_name_affiliation
-        description: Search for authors
+        - authors
+        operationId: resolve.get_author_name_affiliation
+        description: Search for author by name and/or affiliation
         parameters:
           - in: query
-            name: author_name
+            name: name
             schema:
               type: string
             required: true 
             description: Name of the author
           - in: query
-            name: author_affiliation
+            name: affiliation
             schema:
               type: string
             description: Affiliation of the author
@@ -69,30 +69,30 @@ paths:
                   items:
                     $ref: '#/components/schemas/Author'
 
-  /search_paper:
+  /papers:
       get:
         tags:
-        - public
+        - papers
         description: Search for papers <br> Provide <br> 1. author name and/or author affiliation to search for papers of the author, or <br> 2. paperID for exact search of paper, or <br> 3. title of paper
-        operationId: resolve.search_author_for_paper
+        operationId: resolve.get_author_for_paper
         parameters:
           - in: query
-            name: author_name
+            name: autho-name
             schema:
               type: string
             description: Name of the author
           - in: query
-            name: author_affiliation
+            name: author-affiliation
             schema:
               type: string
             description: Affiliation of the author
           - in: query
-            name: paperID
+            name: paperId
             schema:
               type: string
             description: ID of the paper
           - in: query
-            name: paper_title
+            name: paper-title
             schema:
               type: string
             description: title of the paper
@@ -113,26 +113,26 @@ paths:
           '400':
             description: Bad request.         
   
-  /search_reference_paper:
+  /papers/references:
       get:
         tags:
-          - public
-        operationId: resolve.search_reference_paper
+          - papers
+        operationId: resolve.get_reference_paper
         description: Searches for the papers referenced by/referencing the given paper
         parameters:
           - in: query
-            name: paperID
+            name: paperId
             schema:
               type: string
             required: true 
             description: ID of the paper
           - in: query
-            name: num_paper
+            name: num-paper
             schema:
               type: integer 
             description: Number of reference paper to be searched
           - in: query
-            name: cited_by_papers
+            name: cited-by-papers
             schema:
               type: boolean 
             description: Indicator of whether papers referencing the given paper is wanted, default to False meaning paper referenced by the given paper are returned  
@@ -149,7 +149,38 @@ paths:
                 schema:
                   type: array
                   items:
-                    $ref: '#/components/schemas/Paper'                                                                                                                                                                 
+                    $ref: '#/components/schemas/Paper'  
+
+  /papers/findByAuthors:
+    get:
+      tags:
+      - papers
+      operationId: resolve.get_papers_by_authors
+      description: Search for multiple authors for their publications
+      parameters:
+        - in: query
+          name: names
+          schema:
+            type: string
+            example: Marry, John, Emily, Jane
+          required: true
+          description: Arrays of names seperated by comma
+        - in: query
+          name: affiliations
+          schema:
+            type: string
+            example: University of Illinois, , , University of California
+          required: true
+          description: Arrays of affiliation matching the order of authors, seperated by comma, leave a blank space for unknown affiliations
+      responses:
+        '200':
+          description: OK
+          content:
+            applicatoin/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Paper'                                                                                                                                                               
 
 
 components:
