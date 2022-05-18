@@ -66,7 +66,7 @@ ElasticSearch-MAG-Database
     * ```src/searcher/sql_searcher``` defines the class ```sql_searcher``` that is connected to the research group's MySQL database and supports making searche query to the database.
     * ```src/searcher/full_form_detector``` scrapes for the full form of an academic institution given its acronym in Wikipedia. 
 ## Functional Design
-<p align="center"><img src="functional-design.png" width="60%"/><p>
+<p align="center"><img src="IMG_0176.jpg" width="60%"/><p>
     
 ## Built with
 This module uses the following open source packages:
